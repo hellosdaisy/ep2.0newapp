@@ -15,7 +15,7 @@ Extrauterine_echoes_options = {0: 'Anechoic', 1: 'Homogeneous echo', 2: 'Heterog
 feature_names = [
     "Gestational_age", "Abdominal_tenderness", "Vaginal_bleeding",
     "Pelvic_effusion", "Extrauterine_echoes", "Intrauterine_echoes_size",
-    "hCG_ratio", "loghCG/G","Progesterone"
+    "hCG_ratio", "loghCG_G","Progesterone"
 ]
 
 # 界面布局
@@ -31,7 +31,7 @@ Extrauterine_echoes = st.selectbox("Extrauterine_echoes:",
                               format_func=lambda x: Extrauterine_echoes_options[x])
 Intrauterine_echoes_size = st.number_input("Intrauterine echoes size:", min_value=0.00, max_value=5.00, value=0.00)
 hCG_ratio = st.number_input("hCG ratio(hCG48h/hCG0h):", min_value=0.00, max_value=4.5, value=2.0)
-loghCG/G = st.number_input("loghCG/G:", min_value=-1.0, max_value=4.0, value=1.90)
+loghCG_G = st.number_input("loghCG/G:", min_value=-1.0, max_value=4.0, value=1.90)
 Progesterone = st.number_input("Progesterone(ng/ml):", min_value=0.2, max_value=60.0, value=15.0)
 
 if st.button("Predict"):
@@ -44,7 +44,7 @@ if st.button("Predict"):
         "Extrauterine_echoes": Extrauterine_echoes,
         "Intrauterine_echoes_size": Intrauterine_echoes_size,
         "hCG_ratio": hCG_ratio,
-        "loghCG_G":loghCG/G,
+        "loghCG_G":loghCG_G,
         "Progesterone": Progesterone
     }
     
@@ -52,7 +52,7 @@ if st.button("Predict"):
     input_df = pd.DataFrame([feature_values])
     
     # 3. 仅对连续变量进行标准化(关键修复点)
-    continuous_cols = ['Gestational_age', 'Pelvic_effusion','Intrauterine_echoes_size','hCG_ratio','loghCG/G','Progesterone']
+    continuous_cols = ['Gestational_age', 'Pelvic_effusion','Intrauterine_echoes_size','hCG_ratio','loghCG_G','Progesterone']
     input_df[continuous_cols] = scaler.transform(input_df[continuous_cols])
     
     # 4. 预测概率

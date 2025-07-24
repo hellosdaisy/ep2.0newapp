@@ -31,7 +31,7 @@ with left_col:
     Pelvic_effusion = st.number_input("Pelvic effusion:", min_value=0.00, max_value=5.00, value=0.00)
     Extrauterine_echoes = st.selectbox("Extrauterine echoes:", options=list(Extrauterine_echoes_options.keys()), format_func=lambda x: Extrauterine_echoes_options[x])
     Intrauterine_echoes_size = st.number_input("Intrauterine echoes size:", min_value=0.00, max_value=5.00, value=0.00)
-    hCG_ratio = st.number_input("hCG ratio(hCG48h/hCG0h):", min_value=0.00, max_value=4.5, value=2.0)
+    hCG_ratio = st.number_input("hCG ratio(hCG48h/hCG0h):", min_value=0.0, max_value=4.5, value=2.0)
     loghCG_G = st.number_input("loghCG/G:", min_value=-1.0, max_value=4.0, value=1.90)
     Progesterone = st.number_input("Progesterone(ng/ml):", min_value=0.2, max_value=60.0, value=15.0)
 

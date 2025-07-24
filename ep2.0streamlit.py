@@ -56,7 +56,7 @@ if st.button("Predict"):
     input_df[continuous_cols] = scaler.transform(input_df[continuous_cols])
     
     # 4. 预测概率
-    predicted_proba = model.predict_proba(input_df)[0]
+    predicted_proba = model.predict(input_df)[0]
     proba_dict = {
     "VIUP": predicted_proba[0],
     "Miscarriage": predicted_proba[1],

@@ -25,15 +25,15 @@ left_col, right_col = st.columns([3, 2])
 
 with left_col:
     # 左侧输入区
-    Gestational_age = st.number_input("Gestational age:", min_value=22, max_value=78, value=42)
+    Gestational_age = st.number_input("Gestational age:", min_value=22, max_value=78, value=32)
     Abdominal_tenderness = st.selectbox("Abdominal tenderness:", options=[0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
     Vaginal_bleeding = st.selectbox("Vaginal bleeding:", options=[0, 1], format_func=lambda x: 'No' if x == 0 else 'Yes')
-    Pelvic_effusion = st.number_input("Pelvic effusion:", min_value=0.00, max_value=5.00, value=0.00)
+    Pelvic_effusion = st.number_input("Pelvic effusion:", min_value=0.00, max_value=5.00, value=1.45)
     Extrauterine_echoes = st.selectbox("Extrauterine echoes:", options=list(Extrauterine_echoes_options.keys()), format_func=lambda x: Extrauterine_echoes_options[x])
-    Intrauterine_echoes_size = st.number_input("Intrauterine echoes size:", min_value=0.00, max_value=5.00, value=0.00)
-    hCG_ratio = st.number_input("hCG ratio(hCG48h/hCG0h):", min_value=0.0, max_value=4.5, value=2.0)
-    loghCG_G = st.number_input("loghCG/G:", min_value=-1.0, max_value=4.0, value=1.90)
-    Progesterone = st.number_input("Progesterone(ng/ml):", min_value=0.2, max_value=60.0, value=15.0)
+    Intrauterine_echoes_size = st.number_input("Intrauterine echoes size:", min_value=0.00, max_value=5.00, value=1.11)
+    hCG_ratio = st.number_input("hCG ratio(hCG48h/hCG0h):", min_value=0.00, max_value=4.50, value=1.07)
+    loghCG_G = st.number_input("loghCG/G:", min_value=-1.00, max_value=4.00, value=1.48)
+    Progesterone = st.number_input("Progesterone(ng/ml):", min_value=0.2, max_value=60.0, value=15.8)
 
     predict_clicked = st.button("Predict")
 
@@ -107,7 +107,14 @@ if predict_clicked:
         st.metric("Probability: VIUP", f"{p_viup:.1%}")
         st.metric("Probability: Miscarriage", f"{p_miscarriage:.1%}")
         st.metric("Probability: EP", f"{p_ep:.1%}")
-        st.success(f"**Risk Level: {risk_stratum}**")
+        if risk_stratum in ["Very Low Risk", "Low Risk"]:
+            st.success(f"**Risk Level: {risk_stratum}**")    # 绿色
+        elif risk_stratum == "Medium Risk":
+            st.warning(f"**Risk Level: {risk_stratum}**")    # 橙色
+        elif risk_stratum == "High Risk":
+            st.error(f"**Risk Level: {risk_stratum}**")      # 红色，更显眼，也可以改成 success 绿色
+        else:
+            st.info(f"**Risk Level: {risk_stratum}**")       # 其他情况蓝色提示
         st.markdown("**Explanation of Risk Levels:**")
         st.markdown("""
         - **Very Low Risk**: Almost certain viable intrauterine pregnancy

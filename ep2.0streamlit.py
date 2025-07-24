@@ -35,7 +35,7 @@ loghCG_G = st.number_input("loghCG/G:", min_value=-1.0, max_value=4.0, value=1.9
 Progesterone = st.number_input("Progesterone(ng/ml):", min_value=0.2, max_value=60.0, value=15.0)
 
 if st.button("Predict"):
-    # 1. 收集所有特征值
+    # 1. 收集原始数据
     feature_values = {
         "Gestational_age": Gestational_age,
         "Abdominal_tenderness": Abdominal_tenderness,
@@ -44,19 +44,29 @@ if st.button("Predict"):
         "Extrauterine_echoes": Extrauterine_echoes,
         "Intrauterine_echoes_size": Intrauterine_echoes_size,
         "hCG_ratio": hCG_ratio,
-        "loghCG_G":loghCG_G,
+        "loghCG_G": loghCG_G,
         "Progesterone": Progesterone
     }
-    
-    # 2. 创建DataFrame
+
     input_df = pd.DataFrame([feature_values])
-    
-    # 3. 仅对连续变量进行标准化(关键修复点)
+
+    # 2. 对连续变量标准化
     continuous_cols = ['Gestational_age', 'Pelvic_effusion','Intrauterine_echoes_size','hCG_ratio','loghCG_G','Progesterone']
     input_df[continuous_cols] = scaler.transform(input_df[continuous_cols])
-    
-    # 4. 预测概率
-    predicted_proba = model.predict(input_df)[0]
+
+    # 3. One-Hot 编码 Extrauterine_echoes
+    extrauterine_encoded = np.zeros(3)
+    extrauterine_encoded[Extrauterine_echoes] = 1
+
+    # 4. 拼接最终输入向量
+    final_input = np.concatenate([
+        input_df[continuous_cols].values.flatten(),                # 6个连续变量（标准化）
+        [Abdominal_tenderness], [Vaginal_bleeding],               # 2个二分类变量
+        extrauterine_encoded                                      # 3个One-Hot变量
+    ]).reshape(1, -1)  # 共 6 + 2 + 3 = 11 个变量
+
+    # 5. 模型预测
+    predicted_proba = model.predict(final_input)[0]
     proba_dict = {
     "VIUP": predicted_proba[0],
     "Miscarriage": predicted_proba[1],
